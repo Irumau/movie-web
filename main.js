@@ -188,16 +188,15 @@ const getMovieById = async (id) => {
 
 }
 
-
+const ulMovieList = document.createElement('ul');
+ulMovieList.classList.add('movie-info__recommendations-list');
+ulMovieList.classList.add('scrollStyle');
 
 const getRelatedMoviesId = async (id) => {
     const { data } = await api(`movie/${id}/recommendations`);
     const movieRecommendations = data.results;
 
     const movieInfoContainer = document.querySelector('.movie-info__container');
-    const ulMovieList = document.createElement('ul');
-    ulMovieList.classList.add('movie-info__recommendations-list');
-    ulMovieList.classList.add('scrollStyle');
     movieInfoContainer.appendChild(ulMovieList);
 
     movieRecommendations.forEach((movie) => {
