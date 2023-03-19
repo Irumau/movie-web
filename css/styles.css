@@ -444,6 +444,9 @@ body::-webkit-scrollbar-thumb{
 }
 
 .movie-info__generes{
+    background: var(--four-color);
+    padding: .5rem;
+    border-radius: .5rem;
     font-size: 1.3rem;
     font-weight: bold;
 }
