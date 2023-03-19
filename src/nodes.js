@@ -10,7 +10,7 @@ const genericList = document.getElementById('genericList');
 const searchForm = document.getElementById('searchForm');
 const recommendationsContainer = document.getElementById('containerRecommendation');
 const OnAirSeriesContainer = document.getElementById('OnAirSeries');
-const movieInfoContainer = document.querySelector('movie-info__container');
+const movieInfoContainer = document.querySelector('.movie-info__container');
 const movieInfoList = document.querySelector('.movie-info__lista-generes');
 const movieInfoMovieList = document.querySelector('movie-info__recommendations-list');
 

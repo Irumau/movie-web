@@ -2,7 +2,6 @@ import { API_KEY } from "./src/secrets.js";
 import { eventMenuHamburguesa } from "./src/menuHamburguesa.js";
 import { navigator } from './src/navigation.js';
 
-
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -79,7 +78,7 @@ async function getTrendingMoviesPreview() {
 
         const intervalId = setInterval(changeImage, 5000);
 
-     
+
 
         let count = 0;
 
@@ -109,7 +108,7 @@ const getRecommendationPreview = async () => {
     const movies = data.results;
     const movieListContainer = document.getElementById('containerRecommendation');
     createMovies(movies, movieListContainer);
-    movieListContainer.scrollTo(0,0);
+    movieListContainer.scrollTo(0, 0);
 }
 
 const getTopRatedPreview = async () => {
@@ -118,7 +117,7 @@ const getTopRatedPreview = async () => {
     const topRatedMoviesContainer = document.getElementById('topRatedMovies');
     createMovies(movies, topRatedMoviesContainer)
 
-    topRatedMoviesContainer.scrollTo(0,0);
+    topRatedMoviesContainer.scrollTo(0, 0);
 }
 
 
@@ -189,16 +188,18 @@ const getMovieById = async (id) => {
 
 }
 
+
+
 const getRelatedMoviesId = async (id) => {
     const { data } = await api(`movie/${id}/recommendations`);
-
     const movieRecommendations = data.results;
 
+    const movieInfoContainer = document.querySelector('.movie-info__container');
+    const ulMovieList = document.createElement('ul');
+    ulMovieList.classList.add('movie-info__recommendations-list');
+    ulMovieList.classList.add('scrollStyle');
+    movieInfoContainer.appendChild(ulMovieList);
 
-    const movieInfoMovieList = document.querySelector('.movie-info__recommendations-list');
-    movieInfoMovieList.innerHTML = '';
-
-    movieInfoMovieList.scrollTo(0,0);
     movieRecommendations.forEach((movie) => {
         const liMovieList = document.createElement('li');
         const imgMovieList = document.createElement('img');
@@ -206,18 +207,16 @@ const getRelatedMoviesId = async (id) => {
         liMovieList.classList.add('movie-info__recommendations-item');
         imgMovieList.classList.add('movie-info__img');
 
-        imgMovieList.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path);
+        imgMovieList.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || 'http://image.tmdb.org/t/p/w300' + movie.backdrop_path);
         imgMovieList.setAttribute('alt', movie.title);
 
-        liMovieList.addEventListener('click',()=>{
+        liMovieList.addEventListener('click', () => {
             location.hash = '#movie=' + movie.id;
         })
 
-        movieInfoMovieList.appendChild(liMovieList);
+        ulMovieList.appendChild(liMovieList);
         liMovieList.appendChild(imgMovieList);
     })
-
-
 };
 
 
