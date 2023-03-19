@@ -4,15 +4,103 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieRu</title>
+    <title>MoviesRu</title>
     <link rel="stylesheet" href="./css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ddec7cb4f9.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>MovieRu</h1>
+    <header class="header">
+        <i class="fa-solid fa-bars menu-hamburguesa" id="menuHamburguesa"></i>
+        <nav class="navCategory scrollStyle hideMenu" >
+            <!-- <ul class="navCategory__list">
+                <li class="navCategory__item">Action</li>
+                <li class="navCategory__item">Action</li>
+            </ul> -->
+        </nav>
+        <h1 class="header-title">MovieRu</h1>
+        <form id="searchForm" class="header-searchForm">
+            <input class="header-searchForm__input" type="text" placeholder="Search" id="searchFormInput">
+            <button class="header-searchForm__button" id="searchFormBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+        <i class="fa-solid fa-house" id="homeBtn"></i>
+    </header>
+
+    <section id="trendingPreview" class="trendingPreview__container">
+        <div class="trendingPreview__header">
+            <h2 class="trendingPreview__title"></h2>
+            <button class="trendingPreview__button" id="watchMoreBtn">Watch more</button>
+        </div>
+        <!-- MAXIMO 4 MODALES -->
+        <div class="trendingPreview__container-movies-trending">
+            <div class="trendingPreview__movies-trending"></div>
+            <div class="trendingPreview__movies-trending"></div>
+            <div class="trendingPreview__movies-trending"></div>
+            <div class="trendingPreview__movies-trending"></div>
+        </div>
+    </section>
+    <section class="movieList-Section"  id="movieAndSeriesSection">
+            <h2 class="movieList__recommendation">Recommendation</h2>
+            <article class="movieList__section" >
+                <div class="movieList__container scrollStyle" id="containerRecommendation">
+                    <!-- <div class="movieList__container-info">
+                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/863E75A035911DBA10F8D7EE1E433A12A1BF4915670B66597AC31C585A291942/scale?width=1200&aspectRatio=1.78&format=jpeg" alt="Movie "
+                        class="movieList__img">
+                        <h3 class="movieList__title-movie">Avenger: EndGame</h3>
+                    </div> -->
+                </div>
+            </article>
+            
+            <h2 class="movieList__topRated">Top Rated</h2>
+            
+            <article class="topRated__movies">
+                <div class="movieList__container scrollStyle" id="topRatedMovies">
+                    <!-- <div class="movieList__container-info">
+                        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/863E75A035911DBA10F8D7EE1E433A12A1BF4915670B66597AC31C585A291942/scale?width=1200&aspectRatio=1.78&format=jpeg" alt="Movie "
+                        class="movieList__img">
+                        <h3 class="movieList__title-movie">Avenger: EndGame</h3>
+                    </div> -->
+                </div>
+            </article>
+    </section>
 
 
+    <h2 class="genericList__title" id="genericListTitle"></h2>
+    <section id="genericList" class="genericList-container">
+         <!-- <div class="movieList__container-info">
+            <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/863E75A035911DBA10F8D7EE1E433A12A1BF4915670B66597AC31C585A291942/scale?width=1200&aspectRatio=1.78&format=jpeg" alt="Movie "
+              class="movieList__img">
+            <h3 class="movieList__title-movie">Avenger: EndGame</h3>
+        </div> -->
+    </section>
 
-    <script src="./src/secrest.js"></script>
-    <script src="./src/main.js"></script>
+    <section class="movie-info" id="movieInfoSection">
+        <article class="movie-info__container">
+            <div class="movie-info__qualification">
+                <h2 class="movie-info__movieTitle"></h2>
+                <span class="movie-info__points"><i class="fa-solid fa-star"></i></span>
+            </div>
+            <p class="movie-info__paragraph">
+            </p>
+            <ul class="movie-info__lista-generes">
+            </ul>
+            <ul class="movie-info__recommendations-list scrollStyle" id="InfoMovieList">
+                <!-- <li class="movie-info__recommendations-item">
+                    <img class="movie-info__img" src="src/img/1639644481_655591_1640209353_noticia_normal.png" alt="nombre de la pelicula">
+                </li> -->
+            </ul>
+        </article>
+    </section>
+
+    
+    <footer class="footer__section">
+        <h3 class="footer__copy">&copy; Made by <a href="https://github.com/Irumau" target="_blank">@Irumau</a></h3>
+    </footer>
+
+
+    <script src="node_modules/axios/dist/axios.min.js"></script>
+    <script type="module" src="./src/main.js"></script>
 </body>
 </html>

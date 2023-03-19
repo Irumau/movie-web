@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Irumau/movie-web/issues"
   },
-  "homepage": "https://github.com/Irumau/movie-web#readme"
+  "homepage": "https://github.com/Irumau/movie-web#readme",
+  "dependencies": {
+    "axios": "^1.3.4"
+  }
 }
