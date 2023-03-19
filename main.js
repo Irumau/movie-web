@@ -43,7 +43,7 @@ function createMovies(movies, container) {
 
         titleMovie.setAttribute('title', movie.title || movie.name)
         movieImg.setAttribute('alt', movie.title);
-        movieImg.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || 'http://image.tmdb.org/t/p/original' + movie.backdrop_path);
+        movieImg.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || movie.backdrop_path);
 
 
         titleMovie.appendChild(textTitleMovie);
@@ -76,32 +76,13 @@ async function getTrendingMoviesPreview() {
         movie.style.background = `linear-gradient(0deg, rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(https://image.tmdb.org/t/p/w342${movies[index].poster_path}) no-repeat`;
         movie.style.backgroundSize = 'cover'
 
-        const intervalId = setInterval(changeImage, 5000);
-
-
-
-        let count = 0;
-
-        function changeImage() {
-            if (count < 4) {
-                movieTitleTrending.textContent = movies[count].title;
-                trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/original${movies[count++].backdrop_path}) no-repeat`;
-                trendingPreview.style.backgroundSize = 'cover';
-            } else {
-                count = 0;
-            }
-        };
-
         movie.addEventListener('click', () => {
             trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/original${movies[index].backdrop_path}) no-repeat`;
             trendingPreview.style.backgroundSize = 'cover';
             movieTitleTrending.textContent = movies[index].title;
-            clearInterval(intervalId);
         })
     })
 }
-
-
 
 const getRecommendationPreview = async () => {
     const { data } = await api(`movie/13/recommendations`)
@@ -119,7 +100,6 @@ const getTopRatedPreview = async () => {
 
     topRatedMoviesContainer.scrollTo(0, 0);
 }
-
 
 const getMoviesByGenres = async (id) => {
     const { data } = await api(`discover/movie`, {
@@ -188,6 +168,7 @@ const getMovieById = async (id) => {
 
 }
 
+
 const ulMovieList = document.createElement('ul');
 ulMovieList.classList.add('movie-info__recommendations-list');
 ulMovieList.classList.add('scrollStyle');
@@ -217,8 +198,6 @@ const getRelatedMoviesId = async (id) => {
         liMovieList.appendChild(imgMovieList);
     })
 };
-
-
 
 
 eventMenuHamburguesa();
