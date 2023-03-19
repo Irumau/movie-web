@@ -138,8 +138,6 @@ body::-webkit-scrollbar-thumb{
     color: var(--second-color);
 }
 
-.header-title:hover{
-}
 
 #homeBtn{
     cursor: pointer;

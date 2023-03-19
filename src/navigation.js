@@ -1,10 +1,10 @@
-import { getTrendingMoviesPreview} from './main.js';
-import { getRecommendationPreview} from './main.js';
-import { getTopRatedPreview} from './main.js';
-import { getMoviesByGenres } from './main.js';
-import { getMoviesBySearch } from './main.js';
-import { getTrendingMovies } from './main.js';
-import { getMovieById } from './main.js';
+import { getTrendingMoviesPreview} from '../main.js';
+import { getRecommendationPreview} from '../main.js';
+import { getTopRatedPreview} from '../main.js';
+import { getMoviesByGenres } from '../main.js';
+import { getMoviesBySearch } from '../main.js';
+import { getTrendingMovies } from '../main.js';
+import { getMovieById } from '../main.js';
 
 searchFormBtn.addEventListener('click', (e)=>{
     if(searchFormInput.value == ''){ 
@@ -32,7 +32,6 @@ window.addEventListener('hashchange',navigator, false);
 
 
 function navigator(){
-    console.log ( { location })
     if(location.hash.startsWith('#trends')){
         trendsPage();
     }else if(location.hash.startsWith('#search=')){

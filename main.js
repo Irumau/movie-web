@@ -1,6 +1,6 @@
-import { API_KEY } from "./secrets.js";
-import { eventMenuHamburguesa } from "./menuHamburguesa.js";
-import { navigator } from './navigation.js';
+import { API_KEY } from "./src/secrets.js";
+import { eventMenuHamburguesa } from "./src/menuHamburguesa.js";
+import { navigator } from './src/navigation.js';
 
 
 const api = axios.create({
@@ -219,6 +219,9 @@ const getRelatedMoviesId = async (id) => {
 
 
 };
+
+
+
 
 eventMenuHamburguesa();
 
