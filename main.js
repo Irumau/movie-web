@@ -198,7 +198,7 @@ const getRelatedMoviesId = async (id) => {
 
     const movieInfoContainer = document.querySelector('.movie-info__container');
     movieInfoContainer.appendChild(ulMovieList);
-
+    ulMovieList.innerHTML='';
     movieRecommendations.forEach((movie) => {
         const liMovieList = document.createElement('li');
         const imgMovieList = document.createElement('img');
