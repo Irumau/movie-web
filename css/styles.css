@@ -60,6 +60,7 @@ body::-webkit-scrollbar-thumb{
     padding: .5rem;
     width: 100%;
     position: fixed;
+    z-index: 50;
 }
 
 
@@ -298,6 +299,9 @@ body::-webkit-scrollbar-thumb{
     max-width: 500px;
 }
 
+.figureContainerImg{
+    margin: 0 0 1rem 0;
+}
 
 .movieList__img{
     cursor: pointer;
@@ -305,7 +309,6 @@ body::-webkit-scrollbar-thumb{
     box-shadow: 5px 5px 10px var(--bg-color);
     object-fit: cover;
     height: 275px;
-    margin: 0 0 1rem;
     width: 200px;
 }
 
@@ -458,7 +461,7 @@ body::-webkit-scrollbar-thumb{
     padding: 1rem;
     overflow-x: scroll;
     background: linear-gradient(0deg,rgba(145,95,245,0.1),rgba(145,95,245,0.1));
-    max-width: 655px;
+    width: 490px;
     border-top-right-radius: 1.5rem;
     border-top-left-radius: 1.5rem;
 
@@ -502,6 +505,42 @@ body::-webkit-scrollbar-thumb{
     color: var(--four-color);
 }
 
+
+
+
+figure{
+    display: flex;
+    
+}
+
+.skeleton{
+    position: relative;
+}
+
+.skeleton::before{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: linear-gradient(90deg,var(--four-color),var(--four-color),var(--third-color));
+    background-size: 200%;
+    animation: skeleton 1s infinite reverse;
+}
+
+
+@keyframes skeleton {
+    0%{
+        background-position: -100% 0;
+    }
+    50%{
+        background-position: -50% 0;
+    }
+
+    100%{
+        background-position: 100% 0;
+    }
+}
 
 
 .inactive{

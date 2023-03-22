@@ -13,6 +13,9 @@ const api = axios.create({
 });
 
 
+
+
+
 // Utils
 
 // function to see the width admitted for the API
@@ -31,6 +34,7 @@ function createMovies(movies, container) {
         const movieImg = document.createElement('img');
         const titleMovie = document.createElement('h3');
         const textTitleMovie = document.createTextNode(`${movie.title || movie.name}`)
+        const figureContainerImg = document.createElement('figure');
 
         movieListContainerInfo.addEventListener('click', () => {
             location.hash = '#movie=' + movie.id;
@@ -39,17 +43,28 @@ function createMovies(movies, container) {
         movieListContainerInfo.classList.add('movieList__container-info');
         movieImg.classList.add('movieList__img');
         titleMovie.classList.add('movieList__title-movie');
+        figureContainerImg.classList.add('figureContainerImg')
+        figureContainerImg.classList.add('skeleton');
+        titleMovie.classList.add('skeleton');
+
 
 
         titleMovie.setAttribute('title', movie.title || movie.name)
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || movie.backdrop_path);
-
+        movieImg.setAttribute('loading', 'lazy')
 
         titleMovie.appendChild(textTitleMovie);
         container.appendChild(movieListContainerInfo)
-        movieListContainerInfo.appendChild(movieImg);
+        figureContainerImg.appendChild(movieImg);
+        movieListContainerInfo.appendChild(figureContainerImg)
         movieListContainerInfo.appendChild(titleMovie);
+
+
+        setTimeout(()=>{
+            figureContainerImg.classList.remove('skeleton');
+            titleMovie.classList.remove('skeleton');
+        },1500)
     });
 }
 
@@ -91,6 +106,9 @@ const getRecommendationPreview = async () => {
     createMovies(movies, movieListContainer);
     movieListContainer.scrollTo(0, 0);
 }
+
+
+
 
 const getTopRatedPreview = async () => {
     const { data } = await api(`movie/top_rated?page=1`);
@@ -152,7 +170,6 @@ const getMovieById = async (id) => {
     movieInfoParagraph.textContent = movie.overview;
 
 
-
     movieInfoList.innerHTML = '';
 
     getGenresInfo.forEach((genres) => {
@@ -172,36 +189,42 @@ const getMovieById = async (id) => {
 const ulMovieList = document.createElement('ul');
 ulMovieList.classList.add('movie-info__recommendations-list');
 ulMovieList.classList.add('scrollStyle');
-
 const getRelatedMoviesId = async (id) => {
     const { data } = await api(`movie/${id}/recommendations`);
     const movieRecommendations = data.results;
 
     const movieInfoContainer = document.querySelector('.movie-info__container');
     movieInfoContainer.appendChild(ulMovieList);
-    ulMovieList.innerHTML='';
+    ulMovieList.innerHTML = '';
     movieRecommendations.forEach((movie) => {
         const liMovieList = document.createElement('li');
         const imgMovieList = document.createElement('img');
 
         liMovieList.classList.add('movie-info__recommendations-item');
         imgMovieList.classList.add('movie-info__img');
+        liMovieList.classList.add('skeleton');
 
-        imgMovieList.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || 'http://image.tmdb.org/t/p/w300' + movie.backdrop_path);
+        imgMovieList.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || movie.backdrop_path);
         imgMovieList.setAttribute('alt', movie.title);
 
         liMovieList.addEventListener('click', () => {
             location.hash = '#movie=' + movie.id;
         })
 
+
         ulMovieList.appendChild(liMovieList);
         liMovieList.appendChild(imgMovieList);
+
+        setTimeout(()=>{
+            liMovieList.classList.remove('skeleton');
+        },1500)
     })
 };
 
 
-eventMenuHamburguesa();
 
+
+eventMenuHamburguesa();
 navigator();
 
 
@@ -214,3 +237,8 @@ export {
     getTrendingMovies,
     getMovieById,
 }
+
+
+
+
+
