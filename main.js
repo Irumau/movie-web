@@ -13,9 +13,6 @@ const api = axios.create({
 });
 
 
-
-
-
 // Utils
 
 // function to see the width admitted for the API
@@ -27,13 +24,28 @@ const api = axios.create({
 //     console.log(data)
 // }
 
+
+const observador = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            const url = entry.target.getAttribute('data-img');
+            entry.target.setAttribute('src', url);
+
+            observador.unobserve(entry.target);
+        }
+    })
+});
+
+
+
 function createMovies(movies, container) {
+
     container.innerHTML = '';
     movies.forEach(movie => {
         const movieListContainerInfo = document.createElement('div');
         const movieImg = document.createElement('img');
         const titleMovie = document.createElement('h3');
-        const textTitleMovie = document.createTextNode(`${movie.title || movie.name}`)
+        const textTitleMovie = document.createTextNode(`${movie.title}`)
         const figureContainerImg = document.createElement('figure');
 
         movieListContainerInfo.addEventListener('click', () => {
@@ -47,24 +59,25 @@ function createMovies(movies, container) {
         figureContainerImg.classList.add('skeleton');
         titleMovie.classList.add('skeleton');
 
-
-
-        titleMovie.setAttribute('title', movie.title || movie.name)
+        titleMovie.setAttribute('title', movie.title)
         movieImg.setAttribute('alt', movie.title);
-        movieImg.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || movie.backdrop_path);
-        movieImg.setAttribute('loading', 'lazy')
+        movieImg.setAttribute('data-img', 'http://image.tmdb.org/t/p/w342' + movie.poster_path);
 
-        titleMovie.appendChild(textTitleMovie);
-        container.appendChild(movieListContainerInfo)
-        figureContainerImg.appendChild(movieImg);
-        movieListContainerInfo.appendChild(figureContainerImg)
-        movieListContainerInfo.appendChild(titleMovie);
+        observador.observe(movieImg);
 
+        if (movie.poster_path != null) {
+            titleMovie.appendChild(textTitleMovie);
+            container.appendChild(movieListContainerInfo)
+            figureContainerImg.appendChild(movieImg);
+            movieListContainerInfo.appendChild(figureContainerImg)
+            movieListContainerInfo.appendChild(titleMovie);
+        }
 
-        setTimeout(()=>{
+        movieImg.addEventListener('load', () => {
             figureContainerImg.classList.remove('skeleton');
             titleMovie.classList.remove('skeleton');
-        },1500)
+        })
+
     });
 }
 
@@ -107,9 +120,6 @@ const getRecommendationPreview = async () => {
     movieListContainer.scrollTo(0, 0);
 }
 
-
-
-
 const getTopRatedPreview = async () => {
     const { data } = await api(`movie/top_rated?page=1`);
     const movies = data.results;
@@ -138,8 +148,33 @@ const getMoviesBySearch = async (query) => {
     });
 
     const moviesAndSeries = data.results;
+
+
     const genericList = document.getElementById('genericList');
+
+    console.log(moviesAndSeries)
+
+    if (data.results.length === 0) {
+        const genericListSearchError = document.querySelector('.genericListError');
+        genericListSearchError.innerHTML = '';
+
+
+        const h2Error = document.createElement('h2');
+        const imgError = document.createElement('img');
+
+        genericListSearchError.classList.remove('inactive');
+        imgError.classList.add('genericListImgError');
+        h2Error.classList.add('genericListErrorTitle');
+
+        h2Error.textContent = `We don't find the Movie`;
+        imgError.setAttribute('src', './src/img/Untitled design.jpg');
+
+        genericListSearchError.appendChild(imgError);
+        genericListSearchError.appendChild(h2Error);
+    }
+
     createMovies(moviesAndSeries, genericList);
+    genericListTitle.textContent = '';
 }
 
 const getTrendingMovies = async () => {
@@ -179,6 +214,11 @@ const getMovieById = async (id) => {
 
         movieInfoList.appendChild(li);
         li.appendChild(liGenre);
+
+
+        li.addEventListener('click', () => {
+            location.hash = `#category=${genres.id}-${genres.name}`;
+        })
     });
 
     getRelatedMoviesId(id);
@@ -196,6 +236,8 @@ const getRelatedMoviesId = async (id) => {
     const movieInfoContainer = document.querySelector('.movie-info__container');
     movieInfoContainer.appendChild(ulMovieList);
     ulMovieList.innerHTML = '';
+
+
     movieRecommendations.forEach((movie) => {
         const liMovieList = document.createElement('li');
         const imgMovieList = document.createElement('img');
@@ -204,7 +246,7 @@ const getRelatedMoviesId = async (id) => {
         imgMovieList.classList.add('movie-info__img');
         liMovieList.classList.add('skeleton');
 
-        imgMovieList.setAttribute('src', 'http://image.tmdb.org/t/p/w342' + movie.poster_path || movie.backdrop_path);
+        imgMovieList.setAttribute('data-img', 'http://image.tmdb.org/t/p/w342' + movie.poster_path);
         imgMovieList.setAttribute('alt', movie.title);
 
         liMovieList.addEventListener('click', () => {
@@ -212,12 +254,20 @@ const getRelatedMoviesId = async (id) => {
         })
 
 
-        ulMovieList.appendChild(liMovieList);
-        liMovieList.appendChild(imgMovieList);
 
-        setTimeout(()=>{
+        observador.observe(imgMovieList)
+
+        if (movie.poster_path != null) {
+            ulMovieList.appendChild(liMovieList);
+            liMovieList.appendChild(imgMovieList);
+        }
+
+
+
+
+        imgMovieList.addEventListener('load', () => {
             liMovieList.classList.remove('skeleton');
-        },1500)
+        })
     })
 };
 
