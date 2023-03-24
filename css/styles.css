@@ -380,8 +380,26 @@ body::-webkit-scrollbar-thumb{
     border-radius: .5rem;
 }
 
+/*--------------------- Generic List ERROR--------------------- */
 
+.genericListError{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
+}
+
+.genericListImgError{
+    object-fit: cover;
+    min-width: 300px;
+    height: 300px;
+    margin: 0;
+}
+
+.genericListErrorTitle{
+    color: var(--second-color);
+}
 
 
 
@@ -452,6 +470,12 @@ body::-webkit-scrollbar-thumb{
     border-radius: .5rem;
     font-size: 1.3rem;
     font-weight: bold;
+    cursor: pointer;
+    transition: transform 800ms ease;
+}
+
+.movie-info__generes:hover{
+    transform: scale(1.1);
 }
 
 .movie-info__recommendations-list{
@@ -488,6 +512,7 @@ body::-webkit-scrollbar-thumb{
 .footer__section{
     background-color: var(--third-color);
     padding: 1rem 0;
+    margin-top: auto;
 }
 
 .footer__copy{
@@ -546,4 +571,5 @@ figure{
 .inactive{
     display:none;
 }
+
 
