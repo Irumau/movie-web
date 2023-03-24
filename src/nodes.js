@@ -13,6 +13,7 @@ const OnAirSeriesContainer = document.getElementById('OnAirSeries');
 const movieInfoContainer = document.querySelector('.movie-info__container');
 const movieInfoList = document.querySelector('.movie-info__lista-generes');
 const movieInfoMovieList = document.querySelector('movie-info__recommendations-list');
+const genericListSearchError = document.querySelector('.genericListError');
 
 
 /*-------------- Elements -------------- */
