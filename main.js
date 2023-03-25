@@ -38,9 +38,12 @@ const observador = new IntersectionObserver((entries) => {
 
 
 
-function createMovies(movies, container) {
+function createMovies(movies, container, { clean = true }) {
+    if (clean) {
+        container.innerHTML = '';
+    }
 
-    container.innerHTML = '';
+
     movies.forEach(movie => {
         const movieListContainerInfo = document.createElement('div');
         const movieImg = document.createElement('img');
@@ -116,7 +119,7 @@ const getRecommendationPreview = async () => {
     const { data } = await api(`movie/13/recommendations`)
     const movies = data.results;
     const movieListContainer = document.getElementById('containerRecommendation');
-    createMovies(movies, movieListContainer);
+    createMovies(movies, movieListContainer, { clean: true });
     movieListContainer.scrollTo(0, 0);
 }
 
@@ -124,7 +127,7 @@ const getTopRatedPreview = async () => {
     const { data } = await api(`movie/top_rated?page=1`);
     const movies = data.results;
     const topRatedMoviesContainer = document.getElementById('topRatedMovies');
-    createMovies(movies, topRatedMoviesContainer)
+    createMovies(movies, topRatedMoviesContainer, { clean: true });
 
     topRatedMoviesContainer.scrollTo(0, 0);
 }
@@ -137,7 +140,7 @@ const getMoviesByGenres = async (id) => {
     });
     const movies = data.results;
     const genericList = document.getElementById('genericList');
-    createMovies(movies, genericList);
+    createMovies(movies, genericList, { clean: true });
 }
 
 const getMoviesBySearch = async (query) => {
@@ -148,12 +151,7 @@ const getMoviesBySearch = async (query) => {
     });
 
     const moviesAndSeries = data.results;
-
-
     const genericList = document.getElementById('genericList');
-
-    console.log(moviesAndSeries)
-
     if (data.results.length === 0) {
         const genericListSearchError = document.querySelector('.genericListError');
         genericListSearchError.innerHTML = '';
@@ -173,17 +171,42 @@ const getMoviesBySearch = async (query) => {
         genericListSearchError.appendChild(h2Error);
     }
 
-    createMovies(moviesAndSeries, genericList);
+    createMovies(moviesAndSeries, genericList, {clean: true});
     genericListTitle.textContent = '';
+}
+
+
+let page = 1;
+
+async function getPaginatedTrendingMovies() {
+    const { scrollTop,
+        scrollHeight,
+        clientHeight
+    } = document.documentElement;
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 55);
+
+    if (scrollIsBottom) {
+        page++
+        const { data } = await api(`trending/movie/day`, {
+            params: {
+                page,
+            }
+        });
+
+        const movies = data.results;
+        const genericList = document.getElementById('genericList');
+
+        createMovies(movies, genericList, { clean: false });
+    }
 }
 
 const getTrendingMovies = async () => {
     const { data } = await api(`trending/movie/day`);
-
     const movies = data.results;
     const genericList = document.getElementById('genericList');
 
-    createMovies(movies, genericList);
+
+    createMovies(movies, genericList, { clean: true });
 }
 
 const getMovieById = async (id) => {
@@ -225,10 +248,8 @@ const getMovieById = async (id) => {
 
 }
 
-
 const ulMovieList = document.createElement('ul');
-ulMovieList.classList.add('movie-info__recommendations-list');
-ulMovieList.classList.add('scrollStyle');
+
 const getRelatedMoviesId = async (id) => {
     const { data } = await api(`movie/${id}/recommendations`);
     const movieRecommendations = data.results;
@@ -237,6 +258,10 @@ const getRelatedMoviesId = async (id) => {
     movieInfoContainer.appendChild(ulMovieList);
     ulMovieList.innerHTML = '';
 
+    if(movieRecommendations.length === 0){
+        ulMovieList.remove();
+        
+    }
 
     movieRecommendations.forEach((movie) => {
         const liMovieList = document.createElement('li');
@@ -260,10 +285,9 @@ const getRelatedMoviesId = async (id) => {
         if (movie.poster_path != null) {
             ulMovieList.appendChild(liMovieList);
             liMovieList.appendChild(imgMovieList);
+            ulMovieList.classList.add('movie-info__recommendations-list');
+            ulMovieList.classList.add('scrollStyle');
         }
-
-
-
 
         imgMovieList.addEventListener('load', () => {
             liMovieList.classList.remove('skeleton');
@@ -286,6 +310,7 @@ export {
     getMoviesBySearch,
     getTrendingMovies,
     getMovieById,
+    getPaginatedTrendingMovies,
 }
 
 

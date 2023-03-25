@@ -5,6 +5,12 @@ import { getMoviesByGenres } from '../main.js';
 import { getMoviesBySearch } from '../main.js';
 import { getTrendingMovies } from '../main.js';
 import { getMovieById } from '../main.js';
+import { getPaginatedTrendingMovies } from '../main.js';
+
+
+
+let infiniteScrolling;
+
 
 searchFormBtn.addEventListener('click', () => {
     const search = searchFormInput.value.split(' ').join('+');
@@ -23,9 +29,17 @@ watchMoreBtn.addEventListener('click', () => {
 
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
+window.addEventListener('scroll', infiniteScrolling, {passive: false});
+
 
 
 function navigator() {
+
+    if(infiniteScrolling){
+        window.removeEventListener('scroll', infiniteScrolling);
+        infiniteScrolling = undefined;
+    }
+
     if (location.hash.startsWith('#trends')) {
         trendsPage();
     } else if (location.hash.startsWith('#search=')) {
@@ -46,6 +60,10 @@ function navigator() {
                     example   
     window.scrollTo({top:0});
     */
+
+    if(infiniteScrolling){
+        window.addEventListener('scroll', infiniteScrolling);
+    }
 }
 
 
@@ -130,6 +148,9 @@ function trendsPage() {
 
     genericListTitle.textContent = 'Trending';
     getTrendingMovies();
+
+
+    infiniteScrolling = getPaginatedTrendingMovies;
 }
 
 
