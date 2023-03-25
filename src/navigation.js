@@ -5,10 +5,11 @@ import { getMoviesByGenres } from '../main.js';
 import { getMoviesBySearch } from '../main.js';
 import { getTrendingMovies } from '../main.js';
 import { getMovieById } from '../main.js';
-import { getPaginatedTrendingMovies } from '../main.js';
+import { getPaginatedGenres, getPaginatedSearch, api, createMovies } from '../main.js';
 
 
-
+let maxPage;
+let page = 1;
 let infiniteScrolling;
 
 
@@ -29,13 +30,13 @@ watchMoreBtn.addEventListener('click', () => {
 
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
-window.addEventListener('scroll', infiniteScrolling, {passive: false});
+window.addEventListener('scroll', infiniteScrolling, { passive: false });
 
 
 
 function navigator() {
 
-    if(infiniteScrolling){
+    if (infiniteScrolling) {
         window.removeEventListener('scroll', infiniteScrolling);
         infiniteScrolling = undefined;
     }
@@ -61,7 +62,7 @@ function navigator() {
     window.scrollTo({top:0});
     */
 
-    if(infiniteScrolling){
+    if (infiniteScrolling) {
         window.addEventListener('scroll', infiniteScrolling);
     }
 }
@@ -100,6 +101,9 @@ function categoriesPage() {
     genericListTitle.textContent = genresName.split('%20').join(' ');
 
     getMoviesByGenres(genresId);
+
+    infiniteScrolling = getPaginatedGenres;
+    page = 1;
 }
 
 function movieDetailsPage() {
@@ -131,9 +135,11 @@ function SearchPage() {
 
     const [_, query] = location.hash.split('='); // => ['#search', 'buscador'];
 
-
     getMoviesBySearch(query);
 
+    infiniteScrolling = getPaginatedSearch;
+
+    page = 1;
 }
 function trendsPage() {
     trendingPreview.classList.add('inactive');
@@ -151,7 +157,55 @@ function trendsPage() {
 
 
     infiniteScrolling = getPaginatedTrendingMovies;
+    page = 1;
+}
+async function getPaginatedTrendingMovies() {
+    const { scrollTop,
+        scrollHeight,
+        clientHeight
+    } = document.documentElement;
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 55);
+
+    if (scrollIsBottom) {
+        page++
+        const { data } = await api(`trending/movie/day`, {
+            params: {
+                page,
+            }
+        });
+
+        maxPage = data.total_pages;
+        if (maxPage > page) {
+            const movies = data.results;
+            const genericList = document.getElementById('genericList');
+
+            createMovies(movies, genericList, { clean: false });
+        }
+    }
+}
+const getPaginated = async (endPoint, {
+    genresId,
+    query,
+}) => {
+    const { scrollTop,
+        scrollHeight,
+        clientHeight
+    } = document.documentElement;
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 55);
+
+    if (scrollIsBottom) {
+        page++
+        const { data } = await api(endPoint, {
+            params: {
+                page,
+                with_genres: genresId,
+                query,
+            }
+        });
+        const movies = data.results;
+        const genericList = document.getElementById('genericList');
+        createMovies(movies, genericList, { clean: false });
+    }
 }
 
-
-export { navigator };
+export { navigator, getPaginated };
