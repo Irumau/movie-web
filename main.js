@@ -1,6 +1,6 @@
 import { API_KEY } from "./src/secrets.js";
 import { eventMenuHamburguesa } from "./src/menuHamburguesa.js";
-import { navigator } from './src/navigation.js';
+import { navigator, getPaginated} from './src/navigation.js';
 
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
@@ -12,6 +12,8 @@ const api = axios.create({
     },
 });
 
+
+let lastId = 0;
 
 // Utils
 
@@ -132,14 +134,18 @@ const getTopRatedPreview = async () => {
     topRatedMoviesContainer.scrollTo(0, 0);
 }
 
-const getMoviesByGenres = async (id) => {
+const getMoviesByGenres = async (id = 0) => {
+    lastId = parseInt(id) > 0 ? id : lastId
+
+
     const { data } = await api(`discover/movie`, {
         params: {
-            with_genres: id,
+            with_genres: lastId,
         }
     });
     const movies = data.results;
     const genericList = document.getElementById('genericList');
+
     createMovies(movies, genericList, { clean: true });
 }
 
@@ -171,34 +177,10 @@ const getMoviesBySearch = async (query) => {
         genericListSearchError.appendChild(h2Error);
     }
 
-    createMovies(moviesAndSeries, genericList, {clean: true});
+    createMovies(moviesAndSeries, genericList, { clean: true });
     genericListTitle.textContent = '';
 }
 
-
-let page = 1;
-
-async function getPaginatedTrendingMovies() {
-    const { scrollTop,
-        scrollHeight,
-        clientHeight
-    } = document.documentElement;
-    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 55);
-
-    if (scrollIsBottom) {
-        page++
-        const { data } = await api(`trending/movie/day`, {
-            params: {
-                page,
-            }
-        });
-
-        const movies = data.results;
-        const genericList = document.getElementById('genericList');
-
-        createMovies(movies, genericList, { clean: false });
-    }
-}
 
 const getTrendingMovies = async () => {
     const { data } = await api(`trending/movie/day`);
@@ -258,9 +240,9 @@ const getRelatedMoviesId = async (id) => {
     movieInfoContainer.appendChild(ulMovieList);
     ulMovieList.innerHTML = '';
 
-    if(movieRecommendations.length === 0){
+    if (movieRecommendations.length === 0) {
         ulMovieList.remove();
-        
+
     }
 
     movieRecommendations.forEach((movie) => {
@@ -294,8 +276,20 @@ const getRelatedMoviesId = async (id) => {
         })
     })
 };
+const getPaginatedGenres = async ()=>{
+
+    const [_, genresData] = location.hash.split('='); // => ['#category', 'id-name'];
+    const [genresId] = genresData.split('-');
 
 
+    getPaginated(`discover/movie`,{genresId})
+}
+const getPaginatedSearch = async()=>{
+
+    const [_, query] = location.hash.split('='); // => ['#search', 'buscador'];
+
+    getPaginated(`search/movie`,{query})
+}
 
 
 eventMenuHamburguesa();
@@ -310,7 +304,10 @@ export {
     getMoviesBySearch,
     getTrendingMovies,
     getMovieById,
-    getPaginatedTrendingMovies,
+    getPaginatedGenres,
+    api,
+    createMovies,
+    getPaginatedSearch,
 }
 
 
