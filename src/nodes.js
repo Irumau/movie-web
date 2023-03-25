@@ -33,4 +33,3 @@ const movieInfoMovieImg = document.querySelector('movie-info__img');
 const genericListTitle = document.getElementById('genresTitle'); 
 
 
-

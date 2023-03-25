@@ -46,6 +46,7 @@ async function getGenresPreview() {
 
             navShow.classList.toggle('showMenu')
 
+
         })
     })
 
