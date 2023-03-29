@@ -2,6 +2,9 @@ import { API_KEY } from "./src/secrets.js";
 import { eventMenuHamburguesa } from "./src/menuHamburguesa.js";
 import { navigator, getPaginated} from './src/navigation.js';
 
+// Data
+
+
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
@@ -12,8 +15,36 @@ const api = axios.create({
     },
 });
 
+function likedMoviesList(){
+    const item = JSON.parse(localStorage.getItem('liked_movies'));
+    let movies;
+    if(item){
+        movies = item
+    }else{
+        movies = {};
+    }
+    return movies;
+}
 
-let lastId = 0;
+function likeMovie(movie){
+    //movie.id
+    const likedMovies = likedMoviesList();
+
+
+    //si la pelicula esta en localStorage
+    if(likedMovies[movie.id]){
+        //removerla del localStorage
+        likedMovies[movie.id] = undefined;
+    }else{
+        //agregar a local storage
+        likedMovies[movie.id] = movie;
+    }
+
+    localStorage.setItem('liked_movies',JSON.stringify(likedMovies));
+}
+
+
+
 
 // Utils
 
@@ -25,7 +56,6 @@ let lastId = 0;
 
 //     console.log(data)
 // }
-
 
 const observador = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -53,7 +83,7 @@ function createMovies(movies, container, { clean = true }) {
         const textTitleMovie = document.createTextNode(`${movie.title}`)
         const figureContainerImg = document.createElement('figure');
 
-        movieListContainerInfo.addEventListener('click', () => {
+        movieImg.addEventListener('click', () => {
             location.hash = '#movie=' + movie.id;
         })
 
@@ -68,6 +98,27 @@ function createMovies(movies, container, { clean = true }) {
         movieImg.setAttribute('alt', movie.title);
         movieImg.setAttribute('data-img', 'http://image.tmdb.org/t/p/w342' + movie.poster_path);
 
+
+        const movieBtn = document.createElement('button');
+
+        movieBtn.classList.add('liked__btn');
+        const movieBtnHeart = document.createElement('i'); 
+
+        movieBtnHeart.classList.add('fa-solid');
+        movieBtnHeart.classList.add('fa-heart');
+        movieBtn.appendChild(movieBtnHeart);
+        
+        likedMoviesList()[movie.id] && movieBtn.classList.toggle('fa-heart--like');
+        movieBtn.addEventListener('click', ()=>{
+            console.log('me agregaste a favoritos');
+            movieBtn.classList.toggle('fa-heart--like');
+            //save in LS
+            likeMovie(movie);
+
+            //I called getLikedMovies to refresh the liked movie section at the moment you press a likedBtn;
+            getLikedMovies();
+        })
+
         observador.observe(movieImg);
 
         if (movie.poster_path != null) {
@@ -76,6 +127,7 @@ function createMovies(movies, container, { clean = true }) {
             figureContainerImg.appendChild(movieImg);
             movieListContainerInfo.appendChild(figureContainerImg)
             movieListContainerInfo.appendChild(titleMovie);
+            figureContainerImg.appendChild(movieBtn)
         }
 
         movieImg.addEventListener('load', () => {
@@ -134,13 +186,10 @@ const getTopRatedPreview = async () => {
     topRatedMoviesContainer.scrollTo(0, 0);
 }
 
-const getMoviesByGenres = async (id = 0) => {
-    lastId = parseInt(id) > 0 ? id : lastId
-
-
+const getMoviesByGenres = async (id) => {
     const { data } = await api(`discover/movie`, {
         params: {
-            with_genres: lastId,
+            with_genres: id,
         }
     });
     const movies = data.results;
@@ -256,11 +305,29 @@ const getRelatedMoviesId = async (id) => {
         imgMovieList.setAttribute('data-img', 'http://image.tmdb.org/t/p/w342' + movie.poster_path);
         imgMovieList.setAttribute('alt', movie.title);
 
-        liMovieList.addEventListener('click', () => {
+        imgMovieList.addEventListener('click', () => {
             location.hash = '#movie=' + movie.id;
         })
 
+        const movieBtn = document.createElement('button');
 
+        movieBtn.classList.add('liked__btn');
+        const movieBtnHeart = document.createElement('i'); 
+
+        movieBtnHeart.classList.add('fa-solid');
+        movieBtnHeart.classList.add('fa-heart');
+        movieBtn.appendChild(movieBtnHeart);
+        
+        likedMoviesList()[movie.id] && movieBtn.classList.toggle('fa-heart--like');
+        movieBtn.addEventListener('click', ()=>{
+            console.log('me agregaste a favoritos');
+            movieBtn.classList.toggle('fa-heart--like');
+            //save in LS
+            likeMovie(movie);
+
+            //I called getLikedMovies to refresh the liked movie section at the moment you press a likedBtn;
+            getLikedMovies();
+        })
 
         observador.observe(imgMovieList)
 
@@ -269,13 +336,16 @@ const getRelatedMoviesId = async (id) => {
             liMovieList.appendChild(imgMovieList);
             ulMovieList.classList.add('movie-info__recommendations-list');
             ulMovieList.classList.add('scrollStyle');
+            liMovieList.appendChild(movieBtn)
         }
+        
 
         imgMovieList.addEventListener('load', () => {
             liMovieList.classList.remove('skeleton');
         })
     })
 };
+
 const getPaginatedGenres = async ()=>{
 
     const [_, genresData] = location.hash.split('='); // => ['#category', 'id-name'];
@@ -291,6 +361,17 @@ const getPaginatedSearch = async()=>{
     getPaginated(`search/movie`,{query})
 }
 
+
+function getLikedMovies(){
+    
+    const likedMovies = likedMoviesList();
+
+    const likedMoviesArray = Object.values(likedMovies);
+    const likedMoviesContainer = document.getElementById('LikedMovies');
+
+
+    createMovies(likedMoviesArray,likedMoviesContainer, {clean:true});
+}
 
 eventMenuHamburguesa();
 navigator();
@@ -308,6 +389,7 @@ export {
     api,
     createMovies,
     getPaginatedSearch,
+    getLikedMovies,
 }
 
 

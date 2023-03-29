@@ -342,13 +342,14 @@ body::-webkit-scrollbar-thumb{
     max-height: 500px;
 }
 
-/*--------------------- ON AIR SERIES --------------------- */
+/*--------------------- LIKED MOVIES --------------------- */
 
-.movieList__On-air-series{
+
+.movieList__likedMovies{
     margin: 2rem 0 0 1rem;
 }
 
-.onAir__section{
+.liked__movies{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -356,7 +357,6 @@ body::-webkit-scrollbar-thumb{
     padding: 2rem;
     max-height: 500px;
 }
-
 
 
 /*--------------------- Generic List--------------------- */
@@ -488,10 +488,11 @@ body::-webkit-scrollbar-thumb{
     width: 490px;
     border-top-right-radius: 1.5rem;
     border-top-left-radius: 1.5rem;
-
 }
 
-
+.movie-info__recommendations-item{
+    position: relative;
+}
 
 .movie-info__img{
     object-fit: cover;
@@ -535,7 +536,7 @@ body::-webkit-scrollbar-thumb{
 
 figure{
     display: flex;
-    
+    position: relative;
 }
 
 .skeleton{
@@ -551,6 +552,29 @@ figure{
     background: linear-gradient(90deg,var(--four-color),var(--four-color),var(--third-color));
     background-size: 200%;
     animation: skeleton 1s infinite reverse;
+}
+
+
+
+.liked__btn{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 5;
+    background: linear-gradient(0deg,rgba(25, 24, 37,0.7),rgba(25, 24, 37,0.7));
+    border: none;
+    cursor: pointer;
+    padding: .2rem;
+    border-radius: .5rem;
+    color: var(--second-color);
+}
+
+.fa-heart {
+    font-size: 1.5rem;
+}
+
+.fa-heart--like{
+    color: #774eff;
 }
 
 

@@ -1,12 +1,11 @@
-import { getTrendingMoviesPreview } from '../main.js';
-import { getRecommendationPreview } from '../main.js';
-import { getTopRatedPreview } from '../main.js';
-import { getMoviesByGenres } from '../main.js';
-import { getMoviesBySearch } from '../main.js';
-import { getTrendingMovies } from '../main.js';
-import { getMovieById } from '../main.js';
-import { getPaginatedGenres, getPaginatedSearch, api, createMovies } from '../main.js';
+import {
+    getTrendingMoviesPreview, getRecommendationPreview,
+    getTopRatedPreview, getMoviesByGenres,
+    getMoviesBySearch, getTrendingMovies, getMovieById,
+    getLikedMovies,
+} from '../main.js';
 
+import { getPaginatedGenres, getPaginatedSearch, api, createMovies } from '../main.js';
 
 let maxPage;
 let page = 1;
@@ -82,6 +81,8 @@ function homePage() {
     getTrendingMoviesPreview();
     getRecommendationPreview();
     getTopRatedPreview();
+    getLikedMovies();
+    page = 1;
 }
 
 function categoriesPage() {
@@ -120,6 +121,7 @@ function movieDetailsPage() {
     const [_, movieId] = location.hash.split('='); // [#movie=, 'id-movie']
 
     getMovieById(movieId);
+    page = 1;
 }
 function SearchPage() {
     trendingPreview.classList.add('inactive');
@@ -137,9 +139,8 @@ function SearchPage() {
 
     getMoviesBySearch(query);
 
-    infiniteScrolling = getPaginatedSearch;
-
     page = 1;
+    infiniteScrolling = getPaginatedSearch;
 }
 function trendsPage() {
     trendingPreview.classList.add('inactive');
@@ -164,9 +165,9 @@ async function getPaginatedTrendingMovies() {
         scrollHeight,
         clientHeight
     } = document.documentElement;
-    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 55);
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
 
-    if (scrollIsBottom) {
+    if (scrollIsBottom && page) {
         page++
         const { data } = await api(`trending/movie/day`, {
             params: {
@@ -191,10 +192,11 @@ const getPaginated = async (endPoint, {
         scrollHeight,
         clientHeight
     } = document.documentElement;
-    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 55);
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
 
     if (scrollIsBottom) {
         page++
+        console.log(page)
         const { data } = await api(endPoint, {
             params: {
                 page,
@@ -205,6 +207,9 @@ const getPaginated = async (endPoint, {
         const movies = data.results;
         const genericList = document.getElementById('genericList');
         createMovies(movies, genericList, { clean: false });
+
+
+        console.log(movies)
     }
 }
 
