@@ -1,6 +1,6 @@
 import { API_KEY } from "./src/secrets.js";
 import { eventMenuHamburguesa } from "./src/menuHamburguesa.js";
-import { navigator, getPaginated} from './src/navigation.js';
+import { navigator, getPaginated } from './src/navigation.js';
 
 // Data
 
@@ -15,32 +15,34 @@ const api = axios.create({
     },
 });
 
-function likedMoviesList(){
+function likedMoviesList() {
     const item = JSON.parse(localStorage.getItem('liked_movies'));
     let movies;
-    if(item){
+    if (item) {
         movies = item
     }else{
         movies = {};
     }
+
     return movies;
 }
 
-function likeMovie(movie){
+function likeMovie(movie) {
     //movie.id
     const likedMovies = likedMoviesList();
 
-
     //si la pelicula esta en localStorage
-    if(likedMovies[movie.id]){
+    if (likedMovies[movie.id]) {
         //removerla del localStorage
         likedMovies[movie.id] = undefined;
-    }else{
+    } else {
         //agregar a local storage
         likedMovies[movie.id] = movie;
     }
 
-    localStorage.setItem('liked_movies',JSON.stringify(likedMovies));
+
+    localStorage.setItem('liked_movies', JSON.stringify(likedMovies));
+
 }
 
 
@@ -102,19 +104,18 @@ function createMovies(movies, container, { clean = true }) {
         const movieBtn = document.createElement('button');
 
         movieBtn.classList.add('liked__btn');
-        const movieBtnHeart = document.createElement('i'); 
+        const movieBtnHeart = document.createElement('i');
 
         movieBtnHeart.classList.add('fa-solid');
         movieBtnHeart.classList.add('fa-heart');
         movieBtn.appendChild(movieBtnHeart);
-        
+
         likedMoviesList()[movie.id] && movieBtn.classList.toggle('fa-heart--like');
-        movieBtn.addEventListener('click', ()=>{
+        movieBtn.addEventListener('click', () => {
             console.log('me agregaste a favoritos');
             movieBtn.classList.toggle('fa-heart--like');
             //save in LS
             likeMovie(movie);
-
             //I called getLikedMovies to refresh the liked movie section at the moment you press a likedBtn;
             getLikedMovies();
         })
@@ -230,7 +231,6 @@ const getMoviesBySearch = async (query) => {
     genericListTitle.textContent = '';
 }
 
-
 const getTrendingMovies = async () => {
     const { data } = await api(`trending/movie/day`);
     const movies = data.results;
@@ -280,7 +280,6 @@ const getMovieById = async (id) => {
 }
 
 const ulMovieList = document.createElement('ul');
-
 const getRelatedMoviesId = async (id) => {
     const { data } = await api(`movie/${id}/recommendations`);
     const movieRecommendations = data.results;
@@ -312,14 +311,14 @@ const getRelatedMoviesId = async (id) => {
         const movieBtn = document.createElement('button');
 
         movieBtn.classList.add('liked__btn');
-        const movieBtnHeart = document.createElement('i'); 
+        const movieBtnHeart = document.createElement('i');
 
         movieBtnHeart.classList.add('fa-solid');
         movieBtnHeart.classList.add('fa-heart');
         movieBtn.appendChild(movieBtnHeart);
-        
+
         likedMoviesList()[movie.id] && movieBtn.classList.toggle('fa-heart--like');
-        movieBtn.addEventListener('click', ()=>{
+        movieBtn.addEventListener('click', () => {
             console.log('me agregaste a favoritos');
             movieBtn.classList.toggle('fa-heart--like');
             //save in LS
@@ -338,7 +337,7 @@ const getRelatedMoviesId = async (id) => {
             ulMovieList.classList.add('scrollStyle');
             liMovieList.appendChild(movieBtn)
         }
-        
+
 
         imgMovieList.addEventListener('load', () => {
             liMovieList.classList.remove('skeleton');
@@ -346,32 +345,45 @@ const getRelatedMoviesId = async (id) => {
     })
 };
 
-const getPaginatedGenres = async ()=>{
+const getPaginatedGenres = async () => {
 
     const [_, genresData] = location.hash.split('='); // => ['#category', 'id-name'];
     const [genresId] = genresData.split('-');
 
 
-    getPaginated(`discover/movie`,{genresId})
+    getPaginated(`discover/movie`, { genresId })
 }
-const getPaginatedSearch = async()=>{
+
+const getPaginatedSearch = async () => {
 
     const [_, query] = location.hash.split('='); // => ['#search', 'buscador'];
 
-    getPaginated(`search/movie`,{query})
+    getPaginated(`search/movie`, { query })
 }
 
 
-function getLikedMovies(){
-    
+const h2EmptyList = document.createElement('h2');
+const h2EmptyListText = document.createTextNode(`You haven't favorite Movies yet.`);
+function getLikedMovies() {
+
     const likedMovies = likedMoviesList();
 
-    const likedMoviesArray = Object.values(likedMovies);
+
     const likedMoviesContainer = document.getElementById('LikedMovies');
+    likedMoviesContainer.innerHTML = '';
+    const likedMoviesArray = Object.values(likedMovies);
 
+    if (likedMoviesArray.length === 0) {
+        h2EmptyList.classList.add('emptyFavoriteList');
+        h2EmptyList.appendChild(h2EmptyListText);
+        likedMoviesContainer.appendChild(h2EmptyList);
+    }else{
+        createMovies(likedMoviesArray, likedMoviesContainer, { clean: true });
+    }
 
-    createMovies(likedMoviesArray,likedMoviesContainer, {clean:true});
 }
+
+
 
 eventMenuHamburguesa();
 navigator();

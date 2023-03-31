@@ -578,6 +578,10 @@ figure{
 }
 
 
+.emptyFavoriteList{
+    padding: 1rem;
+}
+
 @keyframes skeleton {
     0%{
         background-position: -100% 0;
