@@ -21,7 +21,7 @@ const genericListSearchError = document.querySelector('.genericListError');
 
 const searchFormInput = document.getElementById('searchFormInput');
 const searchFormBtn = document.getElementById('searchFormBtn');
-const homeBtn = document.getElementById('homeBtn');
+const homeBtn = document.querySelectorAll('#homeBtn');
 const movieTitleTrending = document.querySelector('.trendingPreview__title');
 const watchMoreBtn = document.getElementById('watchMoreBtn');
 const movieInfoTitle = document.querySelector('.movie-info__movieTitle');
@@ -31,5 +31,7 @@ const movieInfoGenres = document.querySelector('movie-info__generes');
 const movieInfoMovieItem = document.querySelector('movie-info__recommendations-item');
 const movieInfoMovieImg = document.querySelector('movie-info__img');
 const genericListTitle = document.getElementById('genresTitle'); 
+
+
 
 

@@ -1,8 +1,76 @@
 import { API_KEY } from "./src/secrets.js";
 import { eventMenuHamburguesa } from "./src/menuHamburguesa.js";
-import { navigator, getPaginated } from './src/navigation.js';
+import { navigator, getPaginated, homePage } from './src/navigation.js';
 
 // Data
+
+
+const languageObject = {
+    'en': {
+        topRated: 'Top Rated',
+        recommendation: 'Recommendation',
+        favoriteMovies: 'Favorite Movies',
+        emptyFavoriteMovies: `You haven't favorite Movies yet.`,
+    },
+    'es': {
+        topRated: 'Mejor valoradas',
+        recommendation: 'Recomendaciones',
+        favoriteMovies: 'Películas Favoritas',
+        emptyFavoriteMovies: 'Aún no tienes películas favoritas',
+
+    },
+    'pt_br': {
+        topRated: 'Mais votado',
+        recommendation: 'Recomendação',
+        favoriteMovies: 'Gilmes favoritos',
+        emptyFavoriteMovies: 'Você ainda não tem filmes favoritos.',
+
+    },
+    'fr': {
+        topRated: 'Les mieux notés',
+        recommendation: 'Recommandation',
+        favoriteMovies: 'Films préférés',
+        emptyFavoriteMovies: `Vous n'avez pas encore de films favoris.`,
+    },
+    'de': {
+        topRated: 'Best bewertet',
+        recommendation: 'Empfehlung',
+        favoriteMovies: 'Lieblingsfilme',
+        emptyFavoriteMovies: 'Sie haben noch keine Lieblingsfilme.',
+        },
+}
+
+function changeLanguage(language) {
+
+    const titleTopRated = document.querySelector('.movieList__topRated');
+    const titleRecommendation = document.querySelector('.movieList__recommendation');
+    const titleFavoriteMovies = document.querySelector('.movieList__likedMovies');
+    const emptyFavoriteMovies = document.querySelector('.emptyFavoriteList');
+
+
+    const languageObj =  languageObject[language];
+
+    titleTopRated.textContent = languageObj.topRated;
+    titleRecommendation.textContent = languageObj.recommendation;
+    titleFavoriteMovies.textContent = languageObj.favoriteMovies;
+    emptyFavoriteMovies.textContent = languageObj.emptyFavoriteMovies;
+}
+
+const language = document.getElementById('selectLanguage');
+
+let lang = navigator.language;
+
+language.addEventListener('change', (event) => {
+    lang = event.target.value;
+
+    if (lang === 'es') changeLanguage('es');
+    if (lang === 'pt-BR') changeLanguage('pt_br');
+    if(lang === 'fr')changeLanguage('fr');     
+    if(lang === 'de') changeLanguage('de');  
+    if(lang == 'en') changeLanguage('en');  
+    
+    homePage();
+})
 
 
 const api = axios.create({
@@ -20,7 +88,7 @@ function likedMoviesList() {
     let movies;
     if (item) {
         movies = item
-    }else{
+    } else {
         movies = {};
     }
 
@@ -143,7 +211,11 @@ function createMovies(movies, container, { clean = true }) {
 // LLamados a la API
 
 async function getTrendingMoviesPreview() {
-    const { data } = await api('trending/movie/day');
+    const { data } = await api('trending/movie/day', {
+        params: {
+            language: lang
+        }
+    });
     const movies = data.results;
 
     const trendingPreview = document.getElementById('trendingPreview');
@@ -171,7 +243,11 @@ async function getTrendingMoviesPreview() {
 }
 
 const getRecommendationPreview = async () => {
-    const { data } = await api(`movie/13/recommendations`)
+    const { data } = await api(`movie/13/recommendations`, {
+        params: {
+            language: lang
+        }
+    })
     const movies = data.results;
     const movieListContainer = document.getElementById('containerRecommendation');
     createMovies(movies, movieListContainer, { clean: true });
@@ -179,7 +255,11 @@ const getRecommendationPreview = async () => {
 }
 
 const getTopRatedPreview = async () => {
-    const { data } = await api(`movie/top_rated?page=1`);
+    const { data } = await api(`movie/top_rated?page=1`, {
+        params: {
+            language: lang,
+        }
+    });
     const movies = data.results;
     const topRatedMoviesContainer = document.getElementById('topRatedMovies');
     createMovies(movies, topRatedMoviesContainer, { clean: true });
@@ -191,6 +271,7 @@ const getMoviesByGenres = async (id) => {
     const { data } = await api(`discover/movie`, {
         params: {
             with_genres: id,
+            language: lang,
         }
     });
     const movies = data.results;
@@ -203,6 +284,7 @@ const getMoviesBySearch = async (query) => {
     const { data } = await api(`search/movie`, {
         params: {
             query: query,
+            language: lang,
         }
     });
 
@@ -232,7 +314,11 @@ const getMoviesBySearch = async (query) => {
 }
 
 const getTrendingMovies = async () => {
-    const { data } = await api(`trending/movie/day`);
+    const { data } = await api(`trending/movie/day`, {
+        params: {
+            language: lang,
+        }
+    });
     const movies = data.results;
     const genericList = document.getElementById('genericList');
 
@@ -241,7 +327,11 @@ const getTrendingMovies = async () => {
 }
 
 const getMovieById = async (id) => {
-    const { data: movie } = await api(`movie/${id}`);
+    const { data: movie } = await api(`movie/${id}`, {
+        params: {
+            language: lang,
+        }
+    });
 
     const getGenresInfo = movie.genres;
 
@@ -281,7 +371,11 @@ const getMovieById = async (id) => {
 
 const ulMovieList = document.createElement('ul');
 const getRelatedMoviesId = async (id) => {
-    const { data } = await api(`movie/${id}/recommendations`);
+    const { data } = await api(`movie/${id}/recommendations`, {
+        params: {
+            language: lang,
+        }
+    });
     const movieRecommendations = data.results;
 
     const movieInfoContainer = document.querySelector('.movie-info__container');
@@ -363,7 +457,9 @@ const getPaginatedSearch = async () => {
 
 
 const h2EmptyList = document.createElement('h2');
-const h2EmptyListText = document.createTextNode(`You haven't favorite Movies yet.`);
+
+h2EmptyList.classList.add('emptyFavoriteList');
+h2EmptyList.textContent = `You haven't favorite movies yet.`;
 function getLikedMovies() {
 
     const likedMovies = likedMoviesList();
@@ -374,16 +470,12 @@ function getLikedMovies() {
     const likedMoviesArray = Object.values(likedMovies);
 
     if (likedMoviesArray.length === 0) {
-        h2EmptyList.classList.add('emptyFavoriteList');
-        h2EmptyList.appendChild(h2EmptyListText);
         likedMoviesContainer.appendChild(h2EmptyList);
-    }else{
+    } else {
         createMovies(likedMoviesArray, likedMoviesContainer, { clean: true });
     }
 
 }
-
-
 
 eventMenuHamburguesa();
 navigator();

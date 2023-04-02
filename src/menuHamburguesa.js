@@ -1,4 +1,6 @@
 import { API_KEY } from "./secrets.js";
+import { homePage } from "./navigation.js";
+
 
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
@@ -10,15 +12,52 @@ const api = axios.create({
     },
 });
 
+const languageObject = {
+    'en': {
+        genres: 'Genres'
+    },
+    'es': {
+        genres: 'Géneros'
+    },
+    'pt_br': {
+        genres: "Gêneros"
+    },
+}
+
+function changeLanguage(language) {
+
+    const languageObj =  languageObject[language];
+
+    title.textContent = languageObj.genres;
+}
+
+const language = document.getElementById('selectLanguage');
+let lang = navigator.language;
+
+language.addEventListener('change', (event) => {
+    lang = event.target.value;
+    homePage();
+    if(lang === 'en') changeLanguage('en');
+    if(lang === 'es') changeLanguage('es');
+    if(lang === 'pt-BR') changeLanguage('pt_br');
+    if(lang === 'fr') changeLanguage('en');
+    if(lang === 'de') changeLanguage ('en');
+})
+
+
+        
+
 const listGenres = document.createElement('ul');
 const title = document.createElement('h2');
 title.textContent = 'Genres';
 
 
-
 async function getGenresPreview() {
-    const { data } = await api(`genre/movie/list`);
-
+    const { data } = await api(`genre/movie/list`,{
+        params:{
+            language: lang,
+        }
+    });
     const genres = data.genres;
 
 

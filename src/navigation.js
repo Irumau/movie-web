@@ -17,10 +17,14 @@ searchFormBtn.addEventListener('click', () => {
     location.hash = `#search=${search}`;
 })
 
-homeBtn.addEventListener('click', () => {
-    location.hash = '#home';
-    // window.scrollTo({top:0});
+const homeBtnArray = [...homeBtn];
+homeBtnArray.forEach(btn =>{
+    btn.addEventListener('click',()=>{
+        location.hash = '#home';
+    })
 })
+
+
 
 watchMoreBtn.addEventListener('click', () => {
     location.hash = '#trends';
@@ -82,7 +86,6 @@ function homePage() {
     getRecommendationPreview();
     getTopRatedPreview();
     getLikedMovies();
-    page = 1;
 }
 
 function categoriesPage() {
@@ -196,7 +199,6 @@ const getPaginated = async (endPoint, {
 
     if (scrollIsBottom) {
         page++
-        console.log(page)
         const { data } = await api(endPoint, {
             params: {
                 page,
@@ -208,9 +210,7 @@ const getPaginated = async (endPoint, {
         const genericList = document.getElementById('genericList');
         createMovies(movies, genericList, { clean: false });
 
-
-        console.log(movies)
     }
 }
 
-export { navigator, getPaginated };
+export { navigator, getPaginated,homePage };

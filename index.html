@@ -21,12 +21,19 @@
                 <li class="navCategory__item">Action</li>
             </ul> -->
         </nav>
-        <h1 class="header-title">MovieMagic</h1>
+        <h1 class="header-title" id="homeBtn">MovieMagic</h1>
         <form id="searchForm" class="header-searchForm">
             <input class="header-searchForm__input" type="text" placeholder="Search" id="searchFormInput">
             <button class="header-searchForm__button" id="searchFormBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
-        <i class="fa-solid fa-house" id="homeBtn"></i>
+        <button class="homeBtn" id="homeBtn"><i class="fa-solid fa-house" ></i></button>
+        <select class="selectLanguage" name="language" id="selectLanguage">
+            <option value="en">En - English</option>
+            <option value="es">Es - Spanish</option>
+            <option value="pt-BR">Br - Portuguese Brazil</option>
+            <option value="fr">Fr - French</option>
+            <option value="de">De - German</option>
+        </select>
     </header>
 
     <section id="trendingPreview" class="trendingPreview__container">
