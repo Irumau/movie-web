@@ -53,7 +53,10 @@ function changeLanguage(language) {
     titleTopRated.textContent = languageObj.topRated;
     titleRecommendation.textContent = languageObj.recommendation;
     titleFavoriteMovies.textContent = languageObj.favoriteMovies;
-    emptyFavoriteMovies.textContent = languageObj.emptyFavoriteMovies;
+
+    if(emptyFavoriteMovies){
+        emptyFavoriteMovies.textContent = languageObj.emptyFavoriteMovies;  
+    }
 }
 
 const language = document.getElementById('selectLanguage');
@@ -69,6 +72,7 @@ language.addEventListener('change', (event) => {
     if(lang === 'de') changeLanguage('de');  
     if(lang == 'en') changeLanguage('en');  
     
+    window.scrollTo({top:0});   
     homePage();
 })
 

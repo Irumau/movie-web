@@ -102,7 +102,8 @@ function categoriesPage() {
     const [_, genresData] = location.hash.split('='); // => ['#category', 'id-name'];
     const [genresId, genresName] = genresData.split('-');
 
-    genericListTitle.textContent = genresName.split('%20').join(' ');
+    const deCodeGenresName = decodeURIComponent(genresName);
+    genericListTitle.textContent = deCodeGenresName;
 
     getMoviesByGenres(genresId);
 
