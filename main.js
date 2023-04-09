@@ -168,9 +168,10 @@ function createMovies(movies, container, { clean = true }) {
         figureContainerImg.classList.add('skeleton');
         titleMovie.classList.add('skeleton');
 
+
         titleMovie.setAttribute('title', movie.title)
         movieImg.setAttribute('alt', movie.title);
-        movieImg.setAttribute('data-img', 'http://image.tmdb.org/t/p/w342' + movie.poster_path);
+        movieImg.setAttribute('data-img', 'http://image.tmdb.org/t/p/w500' + movie.poster_path);
 
 
         const movieBtn = document.createElement('button');
@@ -211,7 +212,6 @@ function createMovies(movies, container, { clean = true }) {
     });
 }
 
-
 // LLamados a la API
 
 async function getTrendingMoviesPreview() {
@@ -227,21 +227,32 @@ async function getTrendingMoviesPreview() {
     const trendingPreviewMoviesSlide = document.querySelectorAll('.trendingPreview__movies-trending');
     const trendingPreviewMoviesSlideArray = [...trendingPreviewMoviesSlide];
 
-    trendingPreview.style.background = ''
+    trendingPreview.style.background = '';
 
-    trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/original${movies[0].backdrop_path}) no-repeat`;
-    trendingPreview.style.backgroundSize = 'cover';
+    if(window.matchMedia('(max-width: 768px)').matches){
+        trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/w500${movies[0].poster_path}) no-repeat`;
+        trendingPreview.style.backgroundSize = 'cover';
+    }else{
+        trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/original${movies[0].backdrop_path}) no-repeat`;
+        trendingPreview.style.backgroundSize = 'cover';
+    }
+
     movieTitleTrending.innerHTML = movies[0].title;
-
 
     trendingPreviewMoviesSlideArray.map((movie, index) => {
         movie.style.background = `linear-gradient(0deg, rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(https://image.tmdb.org/t/p/w342${movies[index].poster_path}) no-repeat`;
         movie.style.backgroundSize = 'cover'
 
         movie.addEventListener('click', () => {
-            trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/original${movies[index].backdrop_path}) no-repeat`;
-            trendingPreview.style.backgroundSize = 'cover';
-            movieTitleTrending.textContent = movies[index].title;
+            if(window.matchMedia('(max-width: 768px)').matches){
+                trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/w500${movies[index].poster_path}) no-repeat`;
+                trendingPreview.style.backgroundSize = 'cover';
+                movieTitleTrending.textContent = movies[index].title;
+            }else{
+                trendingPreview.style.background = `linear-gradient(0deg, rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(https://image.tmdb.org/t/p/original${movies[index].backdrop_path}) no-repeat`;
+                trendingPreview.style.backgroundSize = 'cover';
+                movieTitleTrending.textContent = movies[index].title;
+            }
         })
     })
 }
@@ -345,13 +356,21 @@ const getMovieById = async (id) => {
     const movieInfoList = document.querySelector('.movie-info__lista-generes');
     const movieInfoSection = document.getElementById('movieInfoSection');
 
-    const Img_URL = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
-    movieInfoSection.style.background = `linear-gradient(0deg,rgba(0,0,0,0.2),rgba(0,0,0,0.2)),url('${Img_URL}') no-repeat`;
-    movieInfoSection.style.backgroundSize = 'cover'
+
+
+    if(window.matchMedia('(max-width: 768px)').matches){
+        const Img_URL = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
+        movieInfoSection.style.background = `linear-gradient(0deg,rgba(0,0,0,0.2),rgba(0,0,0,0.2)),url('${Img_URL}') no-repeat`;
+        movieInfoSection.style.backgroundSize = 'cover'
+    }else{
+        const Img_URL = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+        movieInfoSection.style.background = `linear-gradient(0deg,rgba(0,0,0,0.2),rgba(0,0,0,0.2)),url('${Img_URL}') no-repeat`;
+        movieInfoSection.style.backgroundSize = 'cover'
+    }
+    
     movieInfoTitle.textContent = movie.title;
     movieInfoPoints.textContent = movie.vote_average;
     movieInfoParagraph.textContent = movie.overview;
-
 
     movieInfoList.innerHTML = '';
 
