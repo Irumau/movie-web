@@ -196,7 +196,7 @@ const getPaginated = async (endPoint, {
         scrollHeight,
         clientHeight
     } = document.documentElement;
-    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+    const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 35);
 
     if (scrollIsBottom) {
         page++
